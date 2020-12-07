@@ -19,13 +19,13 @@ def boarding(zbr, pos = 0, rfirst = 0, rlast = 127, cfirst = 0, clast = 7):
     if pos < len(zbr):
         changed = True
         if zbr[pos] == 'F':
-            rlast = math.floor((rlast / 2) + (rfirst  / 2))
+            rlast = math.floor((rlast / 2) + (rfirst / 2))
         elif zbr[pos] == 'B':
             rfirst = math.ceil((rlast / 2) + (rfirst / 2))
         elif zbr[pos] == 'L':
-            clast = math.floor((clast / 2) + (cfirst  / 2))
+            clast = math.floor((clast / 2) + (cfirst / 2))
         elif zbr[pos] == 'R':
-         cfirst = math.ceil((clast / 2) + (cfirst / 2))
+            cfirst = math.ceil((clast / 2) + (cfirst / 2))
     
     if changed == True:
         return boarding(zbr, pos + 1, rfirst, rlast, cfirst, clast)
