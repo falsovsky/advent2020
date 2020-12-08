@@ -1,6 +1,7 @@
 use std::io::BufReader;
 use std::io::BufRead;
 use std::fs::File;
+use std::collections::HashSet;
 
 #[derive(Clone)]
 struct Instruction {
@@ -12,12 +13,12 @@ fn run(code: &Vec<Instruction>) -> (String, i16) {
     let mut pc: i16 = 0;
     let mut acc: i16 = 0;
     let size: u16 = code.len() as u16;
-    let mut visited: Vec<i16> = Vec::new();
+    let mut visited: HashSet<i16> = HashSet::new();
     loop {
         if visited.contains(&pc) {
             return ("infinite-loop".to_string(), acc)
         } else {
-            visited.push(pc);
+            visited.insert(pc);
         }
 
         if pc >= size as i16 {
