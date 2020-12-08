@@ -3,11 +3,10 @@
 
 # read input
 instructions = []
-fp = open('input', 'r')
-instructions = list(
-    map(lambda s: [s[0], int(s[1])], [line.strip().split() for line in fp])
-)
-fp.close()
+with open('input') as fp:
+    instructions = list(
+        map(lambda s: [s[0], int(s[1])], [line.strip().split() for line in fp])
+    )
 
 def run(code):
     pc = 0
