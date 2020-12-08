@@ -6,13 +6,12 @@ use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
 
-fn baggins(entries: &Vec<String>, name: String, types: &mut Vec<String>) {
+fn baggins(entries: &Vec<Vec<String>>, name: String, types: &mut Vec<String>) {
     for bag in entries {
-        let split = &bag.split(" ").collect::<Vec<&str>>();
-        let bagname = format!("{} {}", split[0], split[1]);
-        if split[4] != "no" {
-            for foo in (4..split.len()).step_by(4) {
-                let zbr = format!("{} {}", split[foo + 1], split[foo + 2]);
+        let bagname = format!("{} {}", bag[0], bag[1]);
+        if bag[4] != "no" {
+            for foo in (4..bag.len()).step_by(4) {
+                let zbr = format!("{} {}", bag[foo + 1], bag[foo + 2]);
                 if zbr == name {
                     if types.contains(&bagname.to_string()) == false {
                         types.push(bagname.to_string());
@@ -24,16 +23,15 @@ fn baggins(entries: &Vec<String>, name: String, types: &mut Vec<String>) {
     }
 }
 
-fn baggins2(entries: &Vec<String>, name: String, number: u32) -> u32 {
+fn baggins2(entries: &Vec<Vec<String>>, name: String, number: u32) -> u32 {
     let mut total = 0;
     for bag in entries {
-        let split = &bag.split(" ").collect::<Vec<&str>>();
-        let bagname = format!("{} {}", split[0], split[1]);
+        let bagname = format!("{} {}", bag[0], bag[1]);
         if bagname == name {
-            if split[4] != "no" {
-                for foo in (4..split.len()).step_by(4) {
-                    let subname = format!("{} {}", split[foo + 1], split[foo + 2]);
-                    let subvalue = split[foo].parse::<u32>().unwrap();
+            if bag[4] != "no" {
+                for foo in (4..bag.len()).step_by(4) {
+                    let subname = format!("{} {}", bag[foo + 1], bag[foo + 2]);
+                    let subvalue = bag[foo].parse::<u32>().unwrap();
                     total += number * baggins2(&entries, subname, subvalue);
                 }
             }
@@ -43,11 +41,15 @@ fn baggins2(entries: &Vec<String>, name: String, number: u32) -> u32 {
 }
 
 fn main() {
-    let mut entries: Vec<String> = Vec::new();
+    let mut entries: Vec<Vec<String>> = Vec::new();
     let f = File::open("../day07/input").unwrap();
     let file = BufReader::new(&f);
     for line in file.lines() {
-        entries.push(line.unwrap().to_string());
+        let mut tmp: Vec<String> = Vec::new();
+        for i in line.unwrap().to_string().split(" ").collect::<Vec<_>>() {
+            tmp.push(i.to_string());
+        }
+        entries.push(tmp);
     }
 
     let mut types: Vec<String> = Vec::new();
