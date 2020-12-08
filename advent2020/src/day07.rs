@@ -2,10 +2,10 @@
 extern crate lazy_static;
 extern crate regex;
 
-use std::io::BufReader;
-use std::io::BufRead;
-use std::fs::File;
 use regex::Regex;
+use std::fs::File;
+use std::io::BufRead;
+use std::io::BufReader;
 
 lazy_static! {
     static ref RE_NAME: Regex = Regex::new(r"([\w ]+) bags contain").unwrap();
@@ -26,15 +26,18 @@ fn baggins(entries: &Vec<String>, name: String, types: &mut Vec<String>) {
     }
 }
 
-fn baggins2(entries : &Vec<String>, name: String, number: u32) -> u32 {
+fn baggins2(entries: &Vec<String>, name: String, number: u32) -> u32 {
     let mut total = 0;
     for bag in entries {
         for bagname in RE_NAME.captures_iter(&bag) {
             if bagname[1] == name {
                 for content in RE_CONTENTS.captures_iter(&bag) {
-                    total += number * baggins2(
-                        &entries, content[2].to_string(), content[1].parse::<u32>().unwrap()
-                    );
+                    total += number
+                        * baggins2(
+                            &entries,
+                            content[2].to_string(),
+                            content[1].parse::<u32>().unwrap(),
+                        );
                 }
             }
         }
@@ -53,6 +56,8 @@ fn main() {
     let mut types: Vec<String> = Vec::new();
     baggins(&entries, "shiny gold".to_string(), &mut types);
     println!("part1: {}", types.len());
-    println!("part2: {}", baggins2(&entries, "shiny gold".to_string(), 1) - 1);
-
+    println!(
+        "part2: {}",
+        baggins2(&entries, "shiny gold".to_string(), 1) - 1
+    );
 }

@@ -1,8 +1,8 @@
-use std::io::BufReader;
-use std::io::BufRead;
-use std::fs::File;
-use std::collections::HashMap;
 use regex::Regex;
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::BufRead;
+use std::io::BufReader;
 
 fn main() {
     let mut entries: Vec<String> = Vec::new();
@@ -15,18 +15,27 @@ fn main() {
             entries.push(tmp);
             tmp = "".to_string();
         } else {
-            tmp += &format!(" {}",&clean).to_string();
+            tmp += &format!(" {}", &clean).to_string();
         }
     }
     entries.push(tmp);
 
-    let mut rules: HashMap::<&str, Regex> = HashMap::new();
-    rules.insert("byr", Regex::new(r"byr:(19[2-8][0-9]|199[0-9]|200[0-2])( |$)").unwrap());
+    let mut rules: HashMap<&str, Regex> = HashMap::new();
+    rules.insert(
+        "byr",
+        Regex::new(r"byr:(19[2-8][0-9]|199[0-9]|200[0-2])( |$)").unwrap(),
+    );
     rules.insert("iyr", Regex::new(r"iyr:(201[0-9]|2020)( |$)").unwrap());
     rules.insert("eyr", Regex::new(r"eyr:(202[0-9]|2030)( |$)").unwrap());
-    rules.insert("hgt", Regex::new(r"hgt:((1[5-8][0-9]|19[0-3])cm|(59|6[0-9]|7[0-6])in)( |$)").unwrap());
+    rules.insert(
+        "hgt",
+        Regex::new(r"hgt:((1[5-8][0-9]|19[0-3])cm|(59|6[0-9]|7[0-6])in)( |$)").unwrap(),
+    );
     rules.insert("hcl", Regex::new(r"hcl:(\#[a-f|\d]{6})( |$)").unwrap());
-    rules.insert("ecl", Regex::new(r"ecl:(amb|blu|brn|gry|grn|hzl|oth)( |$)").unwrap());
+    rules.insert(
+        "ecl",
+        Regex::new(r"ecl:(amb|blu|brn|gry|grn|hzl|oth)( |$)").unwrap(),
+    );
     rules.insert("pid", Regex::new(r"pid:(\d{9})( |$)").unwrap());
 
     let mut part1 = 0;

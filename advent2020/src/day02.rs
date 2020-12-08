@@ -1,13 +1,13 @@
-use std::io::BufReader;
-use std::io::BufRead;
-use std::fs::File;
 use regex::Regex;
+use std::fs::File;
+use std::io::BufRead;
+use std::io::BufReader;
 
 struct Password {
     low: u8,
     high: u8,
     letter: char,
-    password: String
+    password: String,
 }
 
 fn is_valid_part1(entry: &Password) -> bool {
@@ -39,7 +39,7 @@ fn main() {
             low: cap[1].parse::<u8>().unwrap(),
             high: cap[2].parse::<u8>().unwrap(),
             letter: cap[3].chars().nth(0).unwrap(),
-            password: (&cap[4]).to_string()
+            password: (&cap[4]).to_string(),
         };
         entries.push(entry);
     }

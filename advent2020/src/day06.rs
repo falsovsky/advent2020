@@ -1,7 +1,7 @@
-use std::io::BufReader;
-use std::io::BufRead;
-use std::fs::File;
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::BufRead;
+use std::io::BufReader;
 
 fn main() {
     let mut entries: Vec<Vec<String>> = Vec::new();
@@ -22,14 +22,14 @@ fn main() {
     let mut part1 = 0;
     let mut part2 = 0;
     for group in entries {
-        let mut questions: HashMap::<char, u16> = HashMap::new();
+        let mut questions: HashMap<char, u16> = HashMap::new();
         for person in &group {
             for (_, c) in person.chars().enumerate() {
                 let mut times: u16 = 0;
                 if questions.contains_key(&c) {
                     times = *questions.get(&c).unwrap();
                 }
-                times +=1;
+                times += 1;
                 questions.remove(&c);
                 questions.insert(c, times);
             }

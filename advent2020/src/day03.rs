@@ -1,6 +1,6 @@
-use std::io::BufReader;
-use std::io::BufRead;
 use std::fs::File;
+use std::io::BufRead;
+use std::io::BufReader;
 
 fn toboggan(entries: Vec<String>, xplus: u32, yplus: u32) -> u32 {
     let mut x = 0;
@@ -31,7 +31,7 @@ fn main() {
     println!("part1: {}", toboggan(entries.clone(), 3, 1));
 
     let mut part2: u64 = 0;
-    let slopes = [[1,1], [3,1], [5,1], [7,1], [1,2]];
+    let slopes = [[1, 1], [3, 1], [5, 1], [7, 1], [1, 2]];
     for slope in &slopes {
         if part2 == 0 {
             part2 = toboggan(entries.clone(), slope[0], slope[1]) as u64;

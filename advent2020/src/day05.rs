@@ -1,20 +1,27 @@
-use std::io::BufReader;
-use std::io::BufRead;
 use std::fs::File;
+use std::io::BufRead;
+use std::io::BufReader;
 
-fn boarding(pass: String, pos: u32, mut rfirst: u32, mut rlast: u32, mut cfirst: u32, mut clast: u32) -> u32 {
+fn boarding(
+    pass: String,
+    pos: u32,
+    mut rfirst: u32,
+    mut rlast: u32,
+    mut cfirst: u32,
+    mut clast: u32,
+) -> u32 {
     let mut changed = false;
     if pos < pass.len() as u32 {
         changed = true;
         let item = pass.chars().nth(pos as usize).unwrap();
         if item == 'F' {
-            rlast = ((rlast as f64 / 2_f64)  + (rfirst as f64 / 2_f64)).floor() as u32;
+            rlast = ((rlast as f64 / 2_f64) + (rfirst as f64 / 2_f64)).floor() as u32;
         } else if item == 'B' {
-            rfirst = ((rlast as f64 / 2_f64)  + (rfirst as f64 / 2_f64)).ceil() as u32;
+            rfirst = ((rlast as f64 / 2_f64) + (rfirst as f64 / 2_f64)).ceil() as u32;
         } else if item == 'L' {
-            clast = ((clast as f64 / 2_f64)  + (cfirst as f64 / 2_f64)).floor() as u32;
-        } else if item == 'R'{
-            cfirst = ((clast as f64 / 2_f64)  + (cfirst as f64 / 2_f64)).ceil() as u32;
+            clast = ((clast as f64 / 2_f64) + (cfirst as f64 / 2_f64)).floor() as u32;
+        } else if item == 'R' {
+            cfirst = ((clast as f64 / 2_f64) + (cfirst as f64 / 2_f64)).ceil() as u32;
         }
     }
     if changed == true {
@@ -30,10 +37,7 @@ fn main() {
     let f = File::open("../day05/input").unwrap();
     let file = BufReader::new(&f);
     for line in file.lines() {
-        let id = boarding(
-            line.unwrap().trim().to_string(),
-            0, 0, 127, 0, 7
-        );
+        let id = boarding(line.unwrap().trim().to_string(), 0, 0, 127, 0, 7);
         if id > part1 {
             part1 = id;
         }
