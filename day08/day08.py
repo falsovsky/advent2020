@@ -1,46 +1,37 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-
-instructions = []
-
 # read input
+instructions = []
 fp = open('input', 'r')
-for line in fp:
-    instructions.append(line.strip().split(" "))
+instructions = list(
+    map(lambda s: [s[0], int(s[1])], [line.strip().split() for line in fp])
+)
 fp.close()
 
 def run(code):
     pc = 0
     acc = 0
+    size = len(code)
     visited = []
     while True:
         if pc in visited:
-            return {
-                'error': 'infinite-loop',
-                'acc': acc
-            }
+            return { 'error': 'infinite-loop', 'acc': acc }
         else:
             visited.append(pc)
 
-        try:
-            opcode = code[pc][0]
-            args = code[pc][1]
-        except IndexError:
-            return {
-                "error": "exit",
-                "acc": acc
-            }
+        if pc >= size:
+            return { "error": "exit", "acc": acc }
 
-        #print(visited)
+        opcode, args = code[pc]
+
         #print("PC={} ACC={} - {} {}".format(pc, acc, opcode, args))
 
         if opcode == "acc":
-            acc += int(args)
+            acc += args
 
         if opcode == "jmp":
-            pc += int(args)
+            pc += args
         else:
             pc += 1
 
@@ -59,5 +50,3 @@ for i, v in enumerate(instructions):
     if result["error"] == "exit":
         print("part2 ", result["acc"])
         break
-
-
