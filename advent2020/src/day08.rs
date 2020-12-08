@@ -1,7 +1,7 @@
-use std::io::BufReader;
-use std::io::BufRead;
-use std::fs::File;
 use std::collections::HashSet;
+use std::fs::File;
+use std::io::BufRead;
+use std::io::BufReader;
 
 #[derive(Clone)]
 struct Instruction {
@@ -16,13 +16,13 @@ fn run(code: &Vec<Instruction>) -> (String, i16) {
     let mut visited: HashSet<i16> = HashSet::new();
     loop {
         if visited.contains(&pc) {
-            return ("infinite-loop".to_string(), acc)
+            return ("infinite-loop".to_string(), acc);
         } else {
             visited.insert(pc);
         }
 
         if pc >= size as i16 {
-            return ("exit".to_string(), acc)
+            return ("exit".to_string(), acc);
         }
 
         let opcode = &code[pc as usize].opcode;
@@ -46,21 +46,25 @@ fn main() {
     let file = BufReader::new(&f);
     for line in file.lines() {
         let tmp = line.as_ref().unwrap().split(" ").collect::<Vec<_>>();
-        entries.push(
-            Instruction {
-                opcode: tmp[0].to_string(),
-                argument: i16::from_str_radix(tmp[1].trim(), 10).unwrap()
-            }
-        );
+        entries.push(Instruction {
+            opcode: tmp[0].to_string(),
+            argument: i16::from_str_radix(tmp[1].trim(), 10).unwrap(),
+        });
     }
     println!("part1: {}", run(&entries).1);
 
     for (k, _) in entries.iter().enumerate() {
         let mut newcode = entries.clone();
         if newcode[k].opcode == "jmp" {
-            newcode[k] = Instruction { opcode: "nop".to_string(), argument: newcode[k].argument };
-        } else if newcode[k].opcode == "nop"  {
-            newcode[k] = Instruction { opcode: "jmp".to_string(), argument: newcode[k].argument };
+            newcode[k] = Instruction {
+                opcode: "nop".to_string(),
+                argument: newcode[k].argument,
+            };
+        } else if newcode[k].opcode == "nop" {
+            newcode[k] = Instruction {
+                opcode: "jmp".to_string(),
+                argument: newcode[k].argument,
+            };
         }
         let result = run(&newcode);
         if result.0 == "exit" {
