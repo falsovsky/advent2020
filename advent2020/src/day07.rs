@@ -15,17 +15,18 @@ lazy_static! {
 fn baggins(entries: &Vec<String>, name: String) -> Vec<String> {
     let mut types: Vec<String> = Vec::new();
     for bag in entries {
-        let bagname = RE_NAME.captures(&bag).unwrap();
-        for content in RE_CONTENTS.captures_iter(&bag) {
-            if content[2] == name {
-                let srcname = &bagname[1];
-                if types.contains(&srcname.to_string()) == false {
-                    types.push(srcname.to_string());
-                }
-                let parents = baggins(&entries, srcname.to_string());
-                for parent in parents {
-                    if types.contains(&parent.to_string()) == false {
-                        types.push(parent.to_string());
+        for bagname in RE_NAME.captures_iter(&bag) {
+            for content in RE_CONTENTS.captures_iter(&bag) {
+                if content[2] == name {
+                    let srcname = &bagname[1];
+                    if types.contains(&srcname.to_string()) == false {
+                        types.push(srcname.to_string());
+                    }
+                    let parents = baggins(&entries, srcname.to_string());
+                    for parent in parents {
+                        if types.contains(&parent.to_string()) == false {
+                            types.push(parent.to_string());
+                        }
                     }
                 }
             }
