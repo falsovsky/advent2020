@@ -1,3 +1,7 @@
+#![feature(test)]
+
+extern crate test;
+
 use regex::Regex;
 use std::collections::HashMap;
 use std::fs::File;
@@ -61,4 +65,9 @@ fn main() {
     }
     println!("part1: {}", part1);
     println!("part2: {}", part2);
+}
+
+#[bench]
+fn bench_day04(b: &mut test::Bencher) {
+    b.iter(|| main());
 }

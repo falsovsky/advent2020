@@ -1,3 +1,7 @@
+#![feature(test)]
+
+extern crate test;
+
 use regex::Regex;
 use std::fs::File;
 use std::io::BufRead;
@@ -56,4 +60,9 @@ fn main() {
     }
     println!("part1: {}", part1);
     println!("part2: {}", part2);
+}
+
+#[bench]
+fn bench_day02(b: &mut test::Bencher) {
+    b.iter(|| main());
 }

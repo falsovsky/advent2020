@@ -1,3 +1,7 @@
+#![feature(test)]
+
+extern crate test;
+
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -25,4 +29,9 @@ fn main() {
             }
         }
     }
+}
+
+#[bench]
+fn bench_day01(b: &mut test::Bencher) {
+    b.iter(|| main());
 }

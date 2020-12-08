@@ -1,3 +1,7 @@
+#![feature(test)]
+
+extern crate test;
+
 use std::collections::HashSet;
 use std::fs::File;
 use std::io::BufRead;
@@ -72,4 +76,9 @@ fn main() {
             break;
         }
     }
+}
+
+#[bench]
+fn bench_day08(b: &mut test::Bencher) {
+    b.iter(|| main());
 }

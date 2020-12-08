@@ -1,3 +1,7 @@
+#![feature(test)]
+
+extern crate test;
+
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufRead;
@@ -43,4 +47,9 @@ fn main() {
     }
     println!("part1: {}", part1);
     println!("part2: {}", part2);
+}
+
+#[bench]
+fn bench_day06(b: &mut test::Bencher) {
+    b.iter(|| main());
 }
