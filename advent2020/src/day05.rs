@@ -28,7 +28,7 @@ fn boarding(
             cfirst = ((clast as f64 / 2_f64) + (cfirst as f64 / 2_f64)).ceil() as u32;
         }
     }
-    if changed == true {
+    if changed {
         return boarding(pass, pos + 1, rfirst, rlast, cfirst, clast);
     } else {
         return rlast * 8 + clast;
@@ -51,7 +51,7 @@ fn main() {
 
     let mut part2 = 0;
     for i in (part1 as f64 / 2_f64) as u32..part1 {
-        if entries.contains(&i) == false {
+        if !entries.contains(&i) {
             part2 = i;
         }
     }

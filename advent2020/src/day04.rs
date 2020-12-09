@@ -52,14 +52,14 @@ fn main() {
             if entry.find(&key) == None {
                 fail1 = true;
             }
-            if rule.is_match(&entry) == false {
+            if !rule.is_match(&entry) {
                 fail2 = true;
             }
         }
-        if fail1 == false {
+        if !fail1 {
             part1 += 1;
         }
-        if fail2 == false {
+        if !fail2 {
             part2 += 1;
         }
     }

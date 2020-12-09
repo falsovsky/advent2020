@@ -15,10 +15,8 @@ fn toboggan(entries: Vec<String>, xplus: u32, yplus: u32) -> u32 {
         x += xplus;
         y += yplus;
         x %= gridwidth;
-        if y < entries.len() as u32 {
-            if entries[y as usize].chars().nth(x as usize).unwrap() == '#' {
-                trees += 1
-            }
+        if y < entries.len() as u32 && entries[y as usize].chars().nth(x as usize).unwrap() == '#' {
+            trees += 1
         }
     }
     return trees;

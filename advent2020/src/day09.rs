@@ -15,7 +15,7 @@ fn xmas(cipher: &Vec<u64>, size: u64) -> u64 {
                 calc.push(value);
             }
         }
-        if calc.contains(&cipher[idx as usize]) == false {
+        if !calc.contains(&cipher[idx as usize]) {
             return cipher[idx as usize];
         }
     }
@@ -24,7 +24,7 @@ fn xmas(cipher: &Vec<u64>, size: u64) -> u64 {
 
 fn xmas2(cipher: &Vec<u64>, target: u64) -> u64 {
     let cipherlen = cipher.len() as u64;
-    for idx1 in 0..cipherlen as u64 {
+    for idx1 in 0..cipherlen {
         let mut numbers: Vec<u64> = Vec::new();
         let mut total: u64 = 0;
 
@@ -32,14 +32,18 @@ fn xmas2(cipher: &Vec<u64>, target: u64) -> u64 {
         numbers.push(val1);
         total += val1;
 
-        for idx2 in idx1 + 1..cipherlen as u64 {
+        if total > target {
+            continue;
+        }
+
+        for idx2 in idx1 + 1..cipherlen {
             let val2 = cipher[idx2 as usize];
             numbers.push(val2);
             total += val2;
 
             if total == target {
-                numbers.sort();
-                return numbers[0] + numbers[numbers.len() - 1]
+                numbers.sort_unstable();
+                return numbers[0] + numbers[numbers.len() - 1];
             }
         }
     }

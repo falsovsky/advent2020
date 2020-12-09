@@ -17,12 +17,12 @@ fn main() {
     let mut part1 = false;
     'outer: for x in &entries {
         for y in &entries {
-            if part1 == false && x + y == 2020 {
+            if !part1 && x + y == 2020 {
                 println!("part1: {}", x * y);
                 part1 = true;
             }
             for z in &entries {
-                if part1 == true && x + y + z == 2020 {
+                if part1 && x + y + z == 2020 {
                     println!("part2: {}", x * y * z);
                     break 'outer;
                 }

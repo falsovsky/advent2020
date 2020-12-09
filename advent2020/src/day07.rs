@@ -2,13 +2,17 @@
 
 extern crate test;
 
+use std::collections::HashMap;
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
-use std::collections::HashMap;
-use std::collections::HashSet;
 
-fn baggins(entries: &Vec<Vec<String>>, name: String, cache: &mut HashMap<String, HashSet<String>>) -> HashSet<String> {
+fn baggins(
+    entries: &Vec<Vec<String>>,
+    name: String,
+    cache: &mut HashMap<String, HashSet<String>>,
+) -> HashSet<String> {
     let mut types: HashSet<String> = HashSet::new();
     for bag in entries {
         if bag[4] != "no" {
@@ -24,13 +28,13 @@ fn baggins(entries: &Vec<Vec<String>>, name: String, cache: &mut HashMap<String,
                     if cache.contains_key(bagname) {
                         values = cache.get(&bagname.to_string()).unwrap().clone();
                     } else {
-                    // Calculate and add to cache
+                        // Calculate and add to cache
                         values = baggins(&entries, bagname.to_string(), cache);
                         cache.insert(bagname.to_string(), values.clone());
                     }
                     // Add bags to bagtypes
                     for item in values {
-                        if types.contains(&item) == false {
+                        if !types.contains(&item) {
                             types.insert(item);
                         }
                     }
@@ -45,7 +49,7 @@ fn baggins2(entries: &Vec<Vec<String>>, name: String, number: u32) -> u32 {
     let mut total = 0;
     for bag in entries {
         let bagname = format!("{} {}", bag[0], bag[1]);
-        if bagname == name && bag[4] != "no"{
+        if bagname == name && bag[4] != "no" {
             for foo in (4..bag.len()).step_by(4) {
                 let subname = format!("{} {}", bag[foo + 1], bag[foo + 2]);
                 let subvalue = bag[foo].parse::<u32>().unwrap();
@@ -62,7 +66,7 @@ fn main() {
     let file = BufReader::new(&f);
     for line in file.lines() {
         let mut tmp: Vec<String> = Vec::new();
-        for i in line.unwrap().to_string().split(" ").collect::<Vec<_>>() {
+        for i in line.unwrap().to_string().split(' ').collect::<Vec<_>>() {
             tmp.push(i.to_string());
         }
         entries.push(tmp);

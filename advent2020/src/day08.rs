@@ -49,7 +49,7 @@ fn main() {
     let f = File::open("../day08/input").unwrap();
     let file = BufReader::new(&f);
     for line in file.lines() {
-        let tmp = line.as_ref().unwrap().split(" ").collect::<Vec<_>>();
+        let tmp = line.as_ref().unwrap().split(' ').collect::<Vec<_>>();
         entries.push(Instruction {
             opcode: tmp[0].to_string(),
             argument: i16::from_str_radix(tmp[1].trim(), 10).unwrap(),
