@@ -34,7 +34,6 @@ fn main() {
                     times = *questions.get(&c).unwrap();
                 }
                 times += 1;
-                questions.remove(&c);
                 questions.insert(c, times);
             }
         }
