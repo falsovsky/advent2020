@@ -2,7 +2,6 @@
 
 extern crate test;
 
-use regex::Regex;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -32,29 +31,36 @@ fn is_valid_part2(entry: &Password) -> bool {
 }
 
 fn main() {
-    let mut entries: Vec<Password> = Vec::new();
-    let re = Regex::new(r"(\d+)-(\d+) (\w): (\w+)").unwrap();
     let f = File::open("../day02/input").unwrap();
     let file = BufReader::new(&f);
-    for line in file.lines() {
-        let zbr = &line.unwrap();
-        let cap = re.captures(zbr).unwrap();
-        let entry: Password = Password {
-            low: cap[1].parse::<u8>().unwrap(),
-            high: cap[2].parse::<u8>().unwrap(),
-            letter: cap[3].chars().nth(0).unwrap(),
-            password: (&cap[4]).to_string(),
-        };
-        entries.push(entry);
-    }
-
     let mut part1 = 0;
     let mut part2 = 0;
-    for entry in &entries {
-        if is_valid_part1(entry) {
+    for line in file.lines() {
+        let mut c = 0;
+        let mut entry: Password = Password {
+            low: 0,
+            high: 0,
+            letter: 'a',
+            password: "a".to_string(),
+        };
+        for zbr in line.unwrap().split(" ").collect::<Vec<_>>() {
+            if c == 0 {
+                let tmp2 = zbr.split("-").collect::<Vec<_>>();
+                entry.low = tmp2[0].parse::<u8>().clone().unwrap();
+                entry.high = tmp2[1].parse::<u8>().clone().unwrap();
+            }
+            if c == 1 {
+                entry.letter = zbr.chars().nth(0).clone().unwrap();
+            }
+            if c == 2 {
+                entry.password = zbr.to_string();
+            }
+            c += 1;
+        }
+        if is_valid_part1(&entry) {
             part1 += 1;
         }
-        if is_valid_part2(entry) {
+        if is_valid_part2(&entry) {
             part2 += 1;
         }
     }
