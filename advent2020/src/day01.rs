@@ -7,19 +7,22 @@ use std::io::BufRead;
 use std::io::BufReader;
 
 fn main() {
-    let mut entries: Vec<u32> = Vec::new();
-
     let f = File::open("../day01/input").unwrap();
     let file = BufReader::new(&f);
+    let mut entries: Vec<_> = Vec::new();
     for line in file.lines() {
         entries.push(line.unwrap().parse::<u32>().unwrap());
     }
+
     let mut part1 = false;
     'outer: for x in &entries {
         for y in &entries {
             if !part1 && x + y == 2020 {
                 println!("part1: {}", x * y);
                 part1 = true;
+            }
+            if x + y > 2020 {
+                continue;
             }
             for z in &entries {
                 if part1 && x + y + z == 2020 {
