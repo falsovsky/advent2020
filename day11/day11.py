@@ -1,8 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pprint
 import copy
+
+EMPTY = "L"
+OCCUP = "#"
+FLOOR = "."
+
+# https://codereview.stackexchange.com/a/62165
+rules = [
+    [-1, -1], [-1, 0], [-1, +1],
+    [ 0, -1],          [ 0, +1],
+    [+1, -1], [+1, 0], [+1, +1]
+]
 
 # read input
 grid = []
@@ -14,189 +24,42 @@ for line in fp:
     grid.append(row)
 fp.close()
 
-# part 1
-pp = pprint.PrettyPrinter(width=60, compact=True)
-#pp.pprint(grid)
+def shallow_find(items, x, y, xplus, yplus):
+    newx = x + xplus
+    newy = y + yplus
+    if newx >= 0 and newx < len(items) and newy >= 0 and newy < len(items[newx]):
+        if items[newx][newy] in [EMPTY, OCCUP]:
+            return items[newx][newy]
+    return False
 
-empty = "L"
-occup = "#"
-
-def solve(items):
+def solve1(items):
     seats = copy.deepcopy(items)
     for idxline in range(0,len(items)):
         for idxrow in range(0, len(items[idxline])):
-            # Empty
-            if items[idxline][idxrow] == empty:
-                valid = True
-                # left
-                if idxrow - 1 >= 0 and items[idxline][idxrow - 1] == occup:
-                    valid = False
-                # right
-                if idxrow + 1 < len(row) and items[idxline][idxrow + 1] == occup:
-                    valid = False
-                # up
-                if idxline - 1 >= 0 and items[idxline - 1][idxrow] == occup:
-                    valid = False
-                # down
-                if idxline + 1 < len(items) and items[idxline + 1][idxrow] == occup:
-                    valid = False
-                # up left
-                if idxline - 1 >= 0 and idxrow - 1 >= 0 and items[idxline - 1][idxrow - 1] == occup:
-                    valid = False
-                # up right
-                if idxline - 1 >= 0 and idxrow + 1 < len(row) and items[idxline - 1][idxrow + 1] == occup:
-                    valid = False
-                # down left
-                if idxline + 1 < len(items) and idxrow - 1 >= 0 and items[idxline + 1][idxrow - 1] == occup:
-                    valid = False
-                # down right
-                if idxline + 1 < len(items) and idxrow + 1 < len(row) and items[idxline + 1][idxrow + 1] == occup:
-                    valid = False
-                if valid == True:
-                    seats[idxline][idxrow] = occup
-
-            # Occupied
-            if items[idxline][idxrow] == occup:
-                c = 0
-                # left
-                if idxrow - 1 >= 0 and items[idxline][idxrow - 1] == occup:
-                    c += 1
-                # right 
-                if idxrow + 1 < len(row) and items[idxline][idxrow + 1] == occup:
-                    c += 1
-                # up
-                if idxline - 1 >= 0 and items[idxline - 1][idxrow] == occup:
-                    c += 1
-                # down
-                if idxline + 1 < len(items) and items[idxline + 1][idxrow] == occup:
-                    c += 1
-                # up left
-                if idxline - 1 >= 0 and idxrow - 1 >= 0 and items[idxline - 1][idxrow - 1] == occup:
-                    c += 1
-                # up right
-                if idxline - 1 >= 0 and idxrow + 1 < len(row) and items[idxline - 1][idxrow + 1] == occup:
-                    c += 1
-                # down left
-                if idxline + 1 < len(items) and idxrow - 1 >= 0 and items[idxline + 1][idxrow - 1] == occup:
-                    c += 1
-                # down right
-                if idxline + 1 < len(items) and idxrow + 1 < len(row) and items[idxline + 1][idxrow + 1] == occup:
-                    c += 1
-                if c >= 4:
-                    seats[idxline][idxrow] = empty
+            value = items[idxline][idxrow]
+            if value != ".":
+                neighbours = []
+                for rule in rules:
+                    neighbour = shallow_find(items, idxline, idxrow, rule[0], rule[1])
+                    if neighbour:
+                        neighbours.append(neighbour)
+                if value == EMPTY and neighbours.count(OCCUP) == 0:
+                    seats[idxline][idxrow] = OCCUP
+                if value == OCCUP and neighbours.count(OCCUP) >= 4:
+                    seats[idxline][idxrow] = EMPTY
     return seats
 
 def deep_find(items, x, y, xplus, yplus):
-    result = []
-    height = len(items)
-    width = len(items[0])
     newx = x
     newy = y
-    newx += xplus
-    newy += yplus
-    while newx >= 0 and newx < height and newx >= 0 and newx < width:
-        if items[newx][newy] != ".":
-            result.append(items[newx][newy])
-            break
-        newx -= xplus
+    while True:
+        newx += xplus
         newy += yplus
-    return result
-
-def get_neighbours(items, x, y):
-    neighbours = []
-
-    # up
-    #neighbours.append(deep_find(items, x, y, -1, 0))
-
-    newx = x
-    newy = y
-    newx -= 1
-    while newx >= 0:
-        if items[newx][newy] != ".":
-            neighbours.append(items[newx][newy])
+        if newx < 0 or newx >= len(items) or newy < 0 or newy >= len(items[newx]):
             break
-        newx -= 1
-
-
-    # down
-    newx = x
-    newy = y
-    newx += 1
-    while newx < len(items):
-        if items[newx][newy] != ".":
-            neighbours.append(items[newx][newy])
-            break
-        newx += 1
-
-    # left
-    newx = x
-    newy = y
-    newy -= 1
-    while newy >= 0:
-        if items[newx][newy] != ".":
-            neighbours.append(items[newx][newy])
-            break
-        newy -= 1
-
-    # right
-    newx = x
-    newy = y
-    newy += 1
-    while newy < len(items[0]):
-        if items[newx][newy] != ".":
-            neighbours.append(items[newx][newy])
-            break
-        newy += 1
-
-    # up left
-    newx = x
-    newy = y
-    newx -= 1
-    newy -= 1
-    while newx >= 0 and newy >= 0:
-        if items[newx][newy] != ".":
-            neighbours.append(items[newx][newy])
-            break
-        newx -= 1
-        newy -= 1
-    
-    # up right
-    newx = x
-    newy = y
-    newx -= 1
-    newy += 1
-    while newx >= 0 and newy < len(items[0]):
-        if items[newx][newy] != ".":
-            neighbours.append(items[newx][newy])
-            break
-        newx -= 1
-        newy += 1
-
-    # down left
-    newx = x
-    newy = y
-    newx += 1
-    newy -= 1
-    while newx < len(items) and newy >= 0:
-        if items[newx][newy] != ".":
-            neighbours.append(items[newx][newy])
-            break
-        newx += 1
-        newy -= 1
-
-    # down right
-    newx = x
-    newy = y
-    newx += 1
-    newy += 1
-    while newx < len(items) and newy < len(items[0]):
-        if items[newx][newy] != ".":
-            neighbours.append(items[newx][newy])
-            break
-        newx += 1
-        newy += 1
-    
-    return neighbours
+        if items[newx][newy] in [EMPTY, OCCUP]:
+            return items[newx][newy]
+    return False
 
 def solve2(items):
     seats = copy.deepcopy(items)
@@ -204,16 +67,20 @@ def solve2(items):
         for idxrow in range(0, len(items[idxline])):
             value = items[idxline][idxrow]
             if value != ".":
-                neighbours = get_neighbours(items, idxline, idxrow)
-                if value == empty and neighbours.count(occup) == 0:
-                    seats[idxline][idxrow] = occup
-                if value == occup and neighbours.count(occup) >= 5:
-                    seats[idxline][idxrow] = empty
+                neighbours = []
+                for rule in rules:
+                    neighbour = deep_find(items, idxline, idxrow, rule[0], rule[1])
+                    if neighbour:
+                        neighbours.append(neighbour)
+                if value == EMPTY and neighbours.count(OCCUP) == 0:
+                    seats[idxline][idxrow] = OCCUP
+                if value == OCCUP and neighbours.count(OCCUP) >= 5:
+                    seats[idxline][idxrow] = EMPTY
     return seats
 
 zbr = copy.deepcopy(grid)
 while True:
-    new = solve(zbr)
+    new = solve1(zbr)
     equal = True
     for x in range(0, len(zbr)):
         for y in range(0, len(zbr[x])):
@@ -222,10 +89,8 @@ while True:
                 break
     if equal:
         part1 = 0
-        for x in range(0, len(zbr)):
-            for y in range(0, len(zbr[x])):
-                if new[x][y] == occup:
-                    part1 += 1
+        for x in new:
+            part1 += x.count(OCCUP)
         break
     zbr = copy.deepcopy(new)
 print("part1", part1)
@@ -243,7 +108,7 @@ while True:
     if equal:
         part2 = 0
         for x in new:
-            part2 += x.count(occup)
+            part2 += x.count(OCCUP)
         break
     zbr = copy.deepcopy(new)
 print("part2", part2)
